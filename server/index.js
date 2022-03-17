@@ -20,11 +20,11 @@ app.use(express.urlencoded({ extended: true })); // body-parser
 app.use(express.json()); // for JSON payloads
 
 app.get("/", (req, res) => {
-    res.status(200).send("test3");
+    res.status(200).send("test4");
 })
 
 app.post("/stringUpload", (req, res) => {
-    console.log(req.body);
+    console.log(req.body.string);
 })
 
 app.post("/fileUpload", (req, res) => {
