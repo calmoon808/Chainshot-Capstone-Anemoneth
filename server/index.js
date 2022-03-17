@@ -25,6 +25,7 @@ app.use(express.urlencoded({ extended: true })); // body-parser
 app.use(express.json()); // for JSON payloads
 
 app.get("/", (req, res) => {
+
     res.status(200).send("test");
     if (error || response.statusCode !== 200) {
         return res.status(500).json({ type: 'error', message: err.message });
@@ -34,20 +35,9 @@ app.get("/", (req, res) => {
 })
 
 app.post("/stringUpload", async(req, res) => {
-    
-   // let data = JSON.stringify(req.body); 
-    
-    console.log(req.body.string);
+
     let result = await ipfs.add(req.body.string);
     console.log(result.cid.toString());
-    // let result = ipfs.add("Hello World", (err, hash) => {
-    //     if(err){
-    //         return console.log(err);
-    //     }
-    // console.log(result);
-    // })
-    
-    
 })
 
 app.post("/fileUpload", (req, res) => {
@@ -69,19 +59,7 @@ app.post("/fileUpload", (req, res) => {
         res.status(200).send({ fileHash, fileName });
     })
 })
-// async function saveFile() {
 
-    
-
-//     let data = fs.readFileSync("./package.json")
-//     let options = {
-//         warpWithDirectory: false,
-//         progress: (prog) => console.log(`Saved :${prog}`)
-//     }
-//     let result = await ipfs.add(data, options);
-//     console.log(result)
-// }
-//saveFile()
 const addFile = async (fileName, filePath) => {
     const file = fs.readFileSync(filePath);
     const fileAdded = await ipfs.add({ path: fileName, content: file });
@@ -91,40 +69,6 @@ const addFile = async (fileName, filePath) => {
     return fileHash;
 }
 
-// async function saveText() {
-    
-
-//     let result = await ipfs.add("test");
-
-//     //console.log(result);
-// }
-//  //saveText();
-
-async function saveFile() {
-
-    
-
-    let data = fs.readFileSync("./package.json")
-    let options = {
-        warpWithDirectory: false,
-        progress: (prog) => console.log(`Saved :${prog}`)
-    }
-    let result = await ipfs.add(data, options);
-    //console.log(result)
-}
-//saveFile()
-
-async function getData(hash) {
-    
-
-    let asyncitr = ipfs.cat(hash)
-
-    for await (const itr of asyncitr) {
-
-        let data = Buffer.from(itr).toString()
-        //console.log(data)
-    }
-}
 
 
 app.listen(port, () => {

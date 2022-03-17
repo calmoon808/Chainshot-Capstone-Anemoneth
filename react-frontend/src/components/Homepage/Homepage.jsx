@@ -1,17 +1,21 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useContext } from 'react'
 import './homepage.scss';
 import axios from 'axios';
+import { AuthContext } from "../../App";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'  //'application/x-www-form-urlencoded';
 
-function Homepage( { isUser, connected, addr1, addrblnc } ) {
-  const handleFileSubmit = async (e) => {
+function Homepage() {
+  const context = useContext(AuthContext);
+  const setUserWalletAddress = context[1];
+
+  const handleFileSubmit = (e) => {
     e.preventDefault();
     const file = e.target.elements[0].files[0];
     const formData = new FormData();
     formData.append("file", file);
-    await axios.post("/fileUpload", formData)
+    axios.post("/fileUpload", formData)
     .then((res) => {
       console.log(res.data);
     })
@@ -32,6 +36,12 @@ function Homepage( { isUser, connected, addr1, addrblnc } ) {
     })
   }
 
+  const handleLogout = (e) => {
+    localStorage.setItem("address", null);
+    setUserWalletAddress(null);
+    window.location.reload();
+  }
+
   return (
     <div className='formsContainer'>
       <h1>HOMEPAGE</h1>
@@ -50,6 +60,7 @@ function Homepage( { isUser, connected, addr1, addrblnc } ) {
         </label>
         <input type="submit" value="Submit" />
       </form>
+      <button onClick={handleLogout}>ClearLocalStorage</button>
     </div>
   )
 }
