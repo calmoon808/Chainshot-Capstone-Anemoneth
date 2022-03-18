@@ -33,9 +33,9 @@ function Homepage() {
   const handleStringSubmit = (e) => {
     e.preventDefault();
     const string = e.target.elements[0].value;
-    axios.post("/stringUpload", { string })
+    axios.post("/stringUpload", { string, userWalletAddress })
     .then((res) => {
-      console.log(res.data);
+      console.log(res);
     })
     .catch(err => {
       console.log(err);
