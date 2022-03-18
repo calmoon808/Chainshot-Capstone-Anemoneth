@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 })
 
 app.post("/stringUpload", async(req, res) => {
-
+    console.log(req.body.userAddress);
     let result = await ipfs.add(req.body.string);
     console.log(result.cid.toString());
 })

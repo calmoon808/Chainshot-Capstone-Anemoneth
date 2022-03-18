@@ -8,6 +8,8 @@ axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'  //'applicat
 
 function Homepage() {
   const context = useContext(AuthContext);
+  
+  const walletAddress = context[0];
   const setUserWalletAddress = context[1];
 
   const handleFileSubmit = (e) => {
@@ -27,7 +29,8 @@ function Homepage() {
   const handleStringSubmit = (e) => {
     e.preventDefault();
     const string = e.target.elements[0].value;
-    axios.post("/stringUpload", { string })
+    const userAddress = walletAddress;
+    axios.post("/stringUpload", { string, userAddress })
     .then((res) => {
       console.log(res.data);
     })
