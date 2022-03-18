@@ -3,8 +3,6 @@ import React, { useState, useEffect, createContext } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from './components/LoginPage/LoginPage';
 import Homepage from './components/Homepage/Homepage';
-// import Login from './components/Login/Login'
-// import Navbar from './components/Navbar/Navbar';
 
 export const AuthContext = createContext();
 

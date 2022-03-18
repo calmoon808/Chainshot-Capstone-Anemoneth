@@ -3,18 +3,24 @@ import './homepage.scss';
 import axios from 'axios';
 import { AuthContext } from "../../App";
 
+// for testing
+const { create } = require('ipfs-http-client');
+const ipfs = create('/ip4/127.0.0.1/tcp/5001');
+
 axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'  //'application/x-www-form-urlencoded';
 
 function Homepage() {
   const context = useContext(AuthContext);
-  const setUserWalletAddress = context[1];
+  const [userWalletAddress, setUserWalletAddress] = context;
 
-  const handleFileSubmit = (e) => {
+  const handleFileSubmit = async (e) => {
     e.preventDefault();
     const file = e.target.elements[0].files[0];
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("userAddress", userWalletAddress);
+
     axios.post("/fileUpload", formData)
     .then((res) => {
       console.log(res.data);
