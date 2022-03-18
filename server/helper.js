@@ -28,9 +28,23 @@ const mkDir = async (dirName) => {
 const writeFile = async (userAddress, filePath, fileName,) => {
     try {
         const file = fs.readFileSync(filePath);
-        await ipfs.files.write(`/${userAddress}/posts/${fileName}`, file, { create: true });
-        const fileDir = await ipfs.files.stat(`/${userAddress}/posts/${fileName}`);
-        return fileDir;
+        await ipfs.files.mkdir(`/${userAddress}/posts/${fileName}`, { parents: true });
+        // write file to file folder
+        await ipfs.files.write(`/${userAddress}/posts/${fileName}/${fileName}`, file, { create: true });
+        // write file data to file folder
+        const fileData = `{ owner: ${userAddress}, name: ${fileName} }`;
+        await ipfs.files.write(`/${userAddress}/posts/${fileName}/fileData`, fileData, { create: true });
+
+
+        // const fileDir = await ipfs.files.ls(`/${userAddress}/posts/${fileName}`);
+
+        const result = []
+
+        for await (const resultPart of ipfs.files.ls(`/${userAddress}/posts/${fileName}`)) {
+            result.push(resultPart)
+        }
+        console.log(result);
+        // return fileDir;
     }
     catch (error) {
         console.log("Something went wrong when creating a new IPFS post");
