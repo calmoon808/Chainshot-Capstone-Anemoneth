@@ -10,7 +10,7 @@ const isUser = async (walletAddress) => {
     }
     catch(error) {
         if (error.message === "file does not exist") return false
-        console.log(1111111,error.message);
+        console.log(error.message);
     }
 }
 
