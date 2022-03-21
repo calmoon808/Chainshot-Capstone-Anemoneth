@@ -1,51 +1,55 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { AuthContext } from '../../App';
+import axios from "axios";
 import './PostList.scss';
-const { create } = require('ipfs-http-client');
-const ipfs = create('/ip4/127.0.0.1/tcp/5001');
+
+axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'  //'application/x-www-form-urlencoded';
 
 function PostList(props) {
+  const context = useContext(AuthContext);
+  const [userWalletAddress] = context;
   const [postList, setPostList] = useState(props.userPosts);
-  // const [preloadedPosts, setPreloadedPosts] = useState([]);
 
-  useEffect(() => {
-    // console.log(props);
-    // const recentPost = postList[postList.length - 1];
-    // const postName = Object.keys(recentPost)[0];
-    // const cid = recentPost[postName][0];
-  }, [props])
-
-  const postComment = () => {
-    return (<div>idk</div>)
-  }
-
-  const mapPosts = () => {
-    postList.map(async post => {
-      console.log(post);
-      const fileUrl = `https://ipfs.io/ipfs/${post.postCid}`;
-      const postData = await ipfs.get(`https://ipfs.io/ipfs/${post.postDataCid}`);
-      console.log(postData);
-      return (
-        <h1>IDK</h1>
-      )
+  const postComment = (e, userWalletAddress, postDataCid) => {
+    const commentText = e.target.elements[0].value
+    axios.post("/postComment", { userWalletAddress, postDataCid, commentText })
+    .then((res) => {
+      console.log(res);
     })
   }
 
   return (
-    <div className='postList'>
-      <ul>
-        {postList.map((post) => {
-          const fileUrl = `https://ipfs.io/ipfs/${post.postCid}`;
-          return (
-            <li key={postList.indexOf(post)} className="posts">
-              <img src={fileUrl} alt="" />
-              <p>Owner: {post.owner}</p>
-              <p>link: {fileUrl}</p>
-              <button onClick={postComment}>Post Comment</button>
-            </li>
-          )
-        })}
-      </ul>
-    </div>
+    <ul className='postList'>
+      {postList.map((post) => {
+        const fileUrl = `https://ipfs.io/ipfs/${post.fileCid}`;
+        return (
+          <li key={postList.indexOf(post)} className="post">
+            <h3>{post.postTitle}</h3>
+            <p>Owner: {post.postOwner}</p>
+            {post.fileCid ? <img src={fileUrl} alt="" /> : ""}
+            <p>{post.postBody}</p>
+            <a href={fileUrl}>IPFS link</a><br />
+
+            <ul className='commentList'>
+              {post.comments.map((comment) => {
+                console.log(comment);
+                return (
+                  <li key={comment.commentId} className="comment">
+                    Comment from: {comment.commentOwner}<br/>
+                    Body: {comment.commentBody}
+                  </li>
+                )
+              })}
+            </ul>
+            <form onSubmit={(e) => postComment(e, userWalletAddress, post.postDataCid)}>
+              <input type="text"></input>
+              <input type="submit" value="Post Comment"></input>
+            </form>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 
