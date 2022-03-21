@@ -16,8 +16,10 @@ const isUser = async (walletAddress) => {
 
 const mkDir = async (dirName) => {
     try {
+        await ipfs.files.mkdir(`/${dirName}/userInfo`, { parents: true });
         await ipfs.files.mkdir(`/${dirName}/posts`, { parents: true });
-        await ipfs.files.mkdir(`/${dirName}/comments`, { parents: true }); 
+        await ipfs.files.mkdir(`/${dirName}/comments`, { parents: true });
+         
     }
     catch (error) {
         console.log("Something went wrong when creating a new IPFS directory");
