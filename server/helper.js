@@ -1,11 +1,13 @@
 const { create } = require('ipfs-http-client');
 const fs = require("fs");
+const { dir } = require('console');
 
 const ipfs = create('/ip4/127.0.0.1/tcp/5001');
+const toBuffer = require('it-to-buffer');
 
-const isUser = async (walletAddress) => {
+const isUser = async (userWalletAddress) => {
     try {
-        const result = await ipfs.files.stat(`/${walletAddress}`);
+        const result = await ipfs.files.stat(`/${userWalletAddress}`);
         return result.cid.toString();
     }
     catch(error) {
@@ -14,10 +16,10 @@ const isUser = async (walletAddress) => {
     }
 }
 
-const mkDir = async (dirName) => {
+const mkUserDir = async (dirName) => {
     try {
         await ipfs.files.mkdir(`/${dirName}/posts`, { parents: true });
-        await ipfs.files.mkdir(`/${dirName}/comments`, { parents: true }); 
+        await ipfs.files.mkdir(`/${dirName}/userInfo`, { parents: true }); 
     }
     catch (error) {
         console.log("Something went wrong when creating a new IPFS directory");
@@ -25,26 +27,50 @@ const mkDir = async (dirName) => {
     }
 }
 
-const writeFile = async (userAddress, filePath, fileName,) => {
+const writeFile = async (_postData) => {
     try {
-        const file = fs.readFileSync(filePath);
-        await ipfs.files.mkdir(`/${userAddress}/posts/${fileName}`, { parents: true });
-        // write file to file folder
-        await ipfs.files.write(`/${userAddress}/posts/${fileName}/${fileName}`, file, { create: true });
-        // write file data to file folder
-        const fileData = `{ owner: ${userAddress}, name: ${fileName} }`;
-        await ipfs.files.write(`/${userAddress}/posts/${fileName}/fileData`, fileData, { create: true });
+        await ipfs.files.mkdir(`/${_postData.userAddress}/posts/${_postData.postTitle}`, { parents: true });
 
-
-        // const fileDir = await ipfs.files.ls(`/${userAddress}/posts/${fileName}`);
-
-        const result = []
-
-        for await (const resultPart of ipfs.files.ls(`/${userAddress}/posts/${fileName}`)) {
-            result.push(resultPart)
+        // write file to new file folder
+        let fileCid = "";
+        if (_postData.filePath) {
+            const file = fs.readFileSync(_postData.filePath);
+            await ipfs.files.write(`/${_postData.userAddress}/posts/${_postData.postTitle}/${_postData.postTitle}`, file, { create: true });
+            fileCid = (await ipfs.files.stat(`/${_postData.userAddress}/posts/${_postData.postTitle}/${_postData.postTitle}`)).cid.toString();
         }
-        console.log(result);
-        // return fileDir;
+
+
+        // write file data to file folder
+        const postData = { 
+            "owner": _postData.userAddress, 
+            "fileCid": fileCid, 
+            "fileName": _postData.fileName,
+            "postTitle": _postData.postTitle,
+            "postBody": _postData.postBody,
+        };
+        await ipfs.files.write(`/${_postData.userAddress}/posts/${_postData.postTitle}/postData`, JSON.stringify(postData), { create: true });
+
+        // change post directory name to cid of postData file
+        let postDataCid = (await ipfs.files.stat(`/${_postData.userAddress}/posts/${_postData.postTitle}/postData`)).cid.toString();
+        await ipfs.files.mkdir(`/${_postData.userAddress}/posts/${postDataCid}`, { parents: true });
+        await ipfs.files.mv(`/${_postData.userAddress}/posts/${_postData.postTitle}/postData`,`/${_postData.userAddress}/posts/${postDataCid}`);
+        if (_postData.filePath) {
+            await ipfs.files.mv(`/${_postData.userAddress}/posts/${_postData.postTitle}/${_postData.postTitle}`,`/${_postData.userAddress}/posts/${postDataCid}`);
+        }
+        await ipfs.files.rm(`/${_postData.userAddress}/posts/${_postData.postTitle}/`, { recursive: true });
+
+        const postObj = {}
+        let dirLength = 0;
+        for await (const resultPart of ipfs.files.ls(`/${_postData.userAddress}/posts/${postDataCid}`)) {
+            if (resultPart.name === "postData") {
+                postObj.postDataCid = resultPart.cid.toString();
+            } else {
+                postObj.postCid = resultPart.cid.toString();
+            }
+            dirLength++;
+        }
+        postObj.owner = _postData.userAddress;
+        return postObj;
     }
     catch (error) {
         console.log("Something went wrong when creating a new IPFS post");
@@ -52,4 +78,26 @@ const writeFile = async (userAddress, filePath, fileName,) => {
     }
 }
 
-module.exports = { isUser, mkDir, writeFile }
+const getUserPosts = async (userWalletAddress) => {
+    try {
+        const result = [];
+        for await (const resultPart of ipfs.files.ls(`/${userWalletAddress}/posts`)) {
+            // getting the postData CID from the name of the directory
+            // result.push(resultPart.name);
+            result.push(await getPost(resultPart.name, userWalletAddress));
+        }
+        return result;
+    }
+    catch(error) {
+        if (error.message === "file does not exist") return false
+        console.log(error.message);
+    }
+}
+
+const getPost = async (postDataCid) => {
+    const bufferedContents = await toBuffer(ipfs.cat(postDataCid));
+    const string = new TextDecoder("utf-8").decode(bufferedContents);
+    return JSON.parse(string);
+}
+
+module.exports = { isUser, mkUserDir, writeFile, getUserPosts }
