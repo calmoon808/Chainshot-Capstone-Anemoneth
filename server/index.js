@@ -4,7 +4,7 @@ const fs = require("fs");
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
-const { isUser, mkUserDir, writeFile, getUserPosts } = require("./helper");
+const { isUser, mkUserDir, writeFile, getUserPosts, postComment } = require("./helper");
 const { create } = require('ipfs-http-client');
 const ipfs = create('/ip4/127.0.0.1/tcp/5001');
 
@@ -20,6 +20,13 @@ app.get("/", (req, res) => {
 app.get("/userPosts", async (req, res) => {
     const userWalletAddress = req.query.userWalletAddress;
     res.status(200).send(await getUserPosts(userWalletAddress));
+})
+
+app.post("/postComment", async (req, res) => {
+    const userWalletAddress = req.body.userWalletAddress;
+    const postDataCid = req.body.postDataCid;
+    const commentText = req.body.commentText;
+    await postComment(userWalletAddress, postDataCid, commentText);
 })
 
 app.post("/postUpload", async (req, res) => {
@@ -56,18 +63,6 @@ app.post("/postUpload", async (req, res) => {
         postObj = await writeFile(postData);
         res.status(200).send(postObj);
     }
-})
-
-app.post("/stringUpload", async(req, res) => {
-    const userAddress = req.body.userWalletAddress;
-    if (!(await isUser(`/${userAddress}`))) {
-        await mkDir(userAddress);
-    }
-
-    await ipfs.files.write(`/${userAddress}/comments/${req.body.string}`, req.body.string, { create: true })
-    let result = await ipfs.files.stat(`/${userAddress}/comments/${req.body.string}`);
-    console.log(result);
-    res.status(200).send()
 })
 
 app.listen(port, () => {
