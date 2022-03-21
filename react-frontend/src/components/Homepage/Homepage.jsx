@@ -3,6 +3,7 @@ import './homepage.scss';
 import axios from 'axios';
 import { AuthContext } from "../../App";
 import PostList from "../PostList/PostList";
+import Navbar from "../Navbar/Navbar";
 import AddPostComponent from "../AddPostComponent/AddPostComponent";
 
 axios.defaults.baseURL = 'http://localhost:8080';
@@ -16,7 +17,7 @@ function Homepage() {
   useEffect(() => {
     const getUserPosts = async () => {
       const response = await axios.get("/userPosts", { params: { userWalletAddress }});
-      console.log(response.data);
+      setUserPosts(response.data);
     }
     getUserPosts();
   }, [userWalletAddress])
@@ -30,8 +31,8 @@ function Homepage() {
 
   return (
     <div className='formsContainer'>
-      <h1>HOMEPAGE</h1>
-      <AddPostComponent setUserPosts={setUserPosts} userWalletAddress={userWalletAddress}/>
+      <Navbar />
+      <AddPostComponent userWalletAddress={userWalletAddress}/>
       <button onClick={handleLogout}>ClearLocalStorage</button>
       {userPosts.length > 0 ? <PostList key={userPosts} userPosts={userPosts} /> : "" }
     </div>
