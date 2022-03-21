@@ -2,13 +2,8 @@ import React, { useState, useContext } from 'react'
 import './homepage.scss';
 import axios from 'axios';
 import { AuthContext } from "../../App";
-
-
 import {Button} from 'react-bootstrap';
-import Test from "../Test/Test";
-
-
-
+import UserNameInfo from "../UserNameInfo/UserNameInfo";
 
 // for testing
 const { create } = require('ipfs-http-client');
@@ -20,8 +15,6 @@ axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'  //'applicat
 function Homepage() {
 
   const [modalShow, setModalShow] = useState(false);
-
-
   const context = useContext(AuthContext);
   const [userWalletAddress, setUserWalletAddress] = context;
 
@@ -63,19 +56,11 @@ function Homepage() {
   return (
     <>
     <div className='formsContainer'>
-      
-
-      
-    </div>
-      
-    
-    
-    <div className='formsContainer'>
       <h1>HOMEPAGE</h1>
       <Button variant="primary" onClick={() => setModalShow(true)}>
         Change username
       </Button>
-      <Test
+      <UserNameInfo
         show={modalShow}
         onHide={() => setModalShow(false)}
       />

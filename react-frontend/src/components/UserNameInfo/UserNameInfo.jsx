@@ -5,7 +5,7 @@ import { AuthContext } from "../../App";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-function Test(props) {
+function UserNameInfo(props) {
 
     const context = useContext(AuthContext);
     const [userWalletAddress, setUserWalletAddress] = context;
@@ -56,4 +56,4 @@ function Test(props) {
     }
 
 
-export default Test;
+export default UserNameInfo;

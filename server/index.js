@@ -43,13 +43,6 @@ app.post("/userName", async(req, res) => {
         let result = await ipfs.files.stat(`/${userAddress}/userInfo/${req.body.userName}`);
         console.log(result);
      }
-     if (await ipfs.files.ls('`/${userAddress}/userInfo/${req.body.userName}' == req.body.userName)){
-        
-        console.log("same username");
-     }
-    
-    
-    
 })
 
 app.post("/fileUpload", async (req, res) => {
