@@ -4,7 +4,6 @@ import axios from 'axios';
 
 function AddPostComponent(props) {
     const handleFileSubmit = async (e) => {
-        e.preventDefault();
         if (!(e.target.elements.title.value)) {
             alert("Post needs a title!");
             return;
@@ -23,7 +22,6 @@ function AddPostComponent(props) {
         }
         axios.post("/postUpload", formData)
         .then((res) => {
-            // props.setUserPosts(userPosts => [...userPosts, res.data]);
             console.log(res.data);
         })
         .catch(err => {
