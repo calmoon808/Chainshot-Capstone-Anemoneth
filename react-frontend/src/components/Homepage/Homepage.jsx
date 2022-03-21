@@ -3,6 +3,13 @@ import './homepage.scss';
 import axios from 'axios';
 import { AuthContext } from "../../App";
 
+
+import {Button} from 'react-bootstrap';
+import Test from "../Test/Test";
+
+
+
+
 // for testing
 const { create } = require('ipfs-http-client');
 const ipfs = create('/ip4/127.0.0.1/tcp/5001');
@@ -11,6 +18,10 @@ axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'  //'application/x-www-form-urlencoded';
 
 function Homepage() {
+
+  const [modalShow, setModalShow] = useState(false);
+
+
   const context = useContext(AuthContext);
   const [userWalletAddress, setUserWalletAddress] = context;
 
@@ -48,9 +59,26 @@ function Homepage() {
     window.location.reload();
   }
 
+
   return (
+    <>
+    <div className='formsContainer'>
+      
+
+      
+    </div>
+      
+    
+    
     <div className='formsContainer'>
       <h1>HOMEPAGE</h1>
+      <Button variant="primary" onClick={() => setModalShow(true)}>
+        Change username
+      </Button>
+      <Test
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
       <form onSubmit={handleFileSubmit}>
         <label>
           File Upload:
@@ -68,6 +96,7 @@ function Homepage() {
       </form>
       <button onClick={handleLogout}>ClearLocalStorage</button>
     </div>
+    </>
   )
 }
 

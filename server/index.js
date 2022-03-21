@@ -31,6 +31,27 @@ app.post("/stringUpload", async(req, res) => {
     console.log(result);
 })
 
+app.post("/userName", async(req, res) => {
+    console.log(Date.now());
+    console.log(req.body);
+    const userAddress = req.body.userWalletAddress;
+     if (!(await isUser(`/${userAddress}`))) {
+     await mkDir(userAddress);
+     }
+     if (await ipfs.files.ls('`/${userAddress}/userInfo/${req.body.userName}' !== req.body.userName)){
+        await ipfs.files.write(`/${userAddress}/userInfo/${req.body.userName}`, req.body.userName + Date.now(), { create: true })
+        let result = await ipfs.files.stat(`/${userAddress}/userInfo/${req.body.userName}`);
+        console.log(result);
+     }
+     if (await ipfs.files.ls('`/${userAddress}/userInfo/${req.body.userName}' == req.body.userName)){
+        
+        console.log("same username");
+     }
+    
+    
+    
+})
+
 app.post("/fileUpload", async (req, res) => {
     const userAddress = req.body.userAddress;
     if (!(await isUser(`/${userAddress}`))) {
