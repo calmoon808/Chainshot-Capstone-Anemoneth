@@ -4,9 +4,7 @@ const fs = require("fs");
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
-const { isUser, mkUserDir, writeFile, getUserPosts, postComment, changeUsername } = require("./helper");
-const { create } = require('ipfs-http-client');
-const ipfs = create('/ip4/127.0.0.1/tcp/5001');
+const { isUser, mkUserDir, addPost, getUserPosts, postComment, changeUsername } = require("./helper");
 
 app.use(fileUpload());
 app.use(cors());
@@ -62,14 +60,14 @@ app.post("/postUpload", async (req, res) => {
                 return res.status(500).send(err);
             }
     
-            postObj = await writeFile(postData);
+            postObj = await addPost(postData);
             fs.unlink(postData.filePath, (err) => {
                 if (err) console.log(err);
             })
             res.status(200).send(postObj);
         })
     } else {
-        postObj = await writeFile(postData);
+        postObj = await addPost(postData);
         res.status(200).send(postObj);
     }
 })
