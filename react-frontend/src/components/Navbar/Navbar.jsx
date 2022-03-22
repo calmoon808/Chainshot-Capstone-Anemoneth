@@ -1,30 +1,22 @@
-import './navbar.scss'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import {Button} from 'react-bootstrap';
+import UserNameInfo from "../UserNameInfo/UserNameInfo";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Navbar.scss'
 
-
-function Navbar( { clwnblnc, dispAddr, username, connected } ) {
+function Navbar() {
+  const [modalShow, setModalShow] = useState(false);
 
   return (
-    <div className='navbar ' id="navbar">
-        <div className='wrapper'>
-            <div className="left">
-                <img src="assets/logo.png" alt="logo" className='logo'></img>
-            </div>
-            <div className='center'>
-                Anemoneth
-            </div>
-            <div className="right">
-                <div className='addrEl'>
-                    Address: {dispAddr}
-                </div>
-                <div className='clwnEl'>
-                    CLWN balance: {clwnblnc}
-                </div>
-                <div className='regEl'>
-                    Registered: {username}
-                </div>
-            </div>
-        </div>
+    <div>
+        <h1>THIS BE THE NAVBAR</h1>
+        <Button variant="primary" onClick={() => setModalShow(true)}>
+          Change username
+        </Button>
+        <UserNameInfo
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+      />
     </div>
   )
 }

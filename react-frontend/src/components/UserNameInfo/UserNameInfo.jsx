@@ -1,8 +1,8 @@
 import React, { Component, useState, useContext, useEffect } from "react";
-import {Modal, Button, Row, Col, Form} from 'react-bootstrap'; 
+import {Modal, Button} from 'react-bootstrap'; 
 import axios from 'axios';
 import { AuthContext } from "../../App";
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 function UserNameInfo(props) {
@@ -10,10 +10,8 @@ function UserNameInfo(props) {
     const context = useContext(AuthContext);
     const [userWalletAddress, setUserWalletAddress] = context;
 
-    const hangelUsernameSubmit = (e) => {
-        e.preventDefault();
+    const handleUsernameSubmit = (e) => {
         const userName = e.target.elements[0].value;
-        console.log(userName);
         axios.post("/userName", { userName, userWalletAddress })
         .then((res) => {
           console.log(res);
@@ -23,9 +21,8 @@ function UserNameInfo(props) {
         })
       }
     
-        return(
-            
-            <Modal 
+        return( 
+          <Modal 
             {...props}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
@@ -38,15 +35,13 @@ function UserNameInfo(props) {
             </Modal.Header>
             <Modal.Body>
                 <div className="container">
-                    <form id="userNameForm" onSubmit={hangelUsernameSubmit}>
+                  <form id="userNameForm" onSubmit={handleUsernameSubmit}>
                     <label>
-                    Change Username:
-                    <input type="text" />
+                      Change Username:
+                      <input type="text" />
                     </label>
-                    
-                    </form>
+                  </form>
                 </div>
-              
             </Modal.Body>
             <Modal.Footer>
               <Button form="userNameForm" type="submit">Submit</Button>

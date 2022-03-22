@@ -1,50 +1,29 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import './homepage.scss';
 import axios from 'axios';
 import { AuthContext } from "../../App";
-import {Button} from 'react-bootstrap';
-import UserNameInfo from "../UserNameInfo/UserNameInfo";
-
-// for testing
-const { create } = require('ipfs-http-client');
-const ipfs = create('/ip4/127.0.0.1/tcp/5001');
+import PostList from "../PostList/PostList";
+import Navbar from "../Navbar/Navbar";
+import AddPostComponent from "../AddPostComponent/AddPostComponent";
+  import {Button} from 'react-bootstrap';
+  import UserNameInfo from "../UserNameInfo/UserNameInfo";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'  //'application/x-www-form-urlencoded';
 
 function Homepage() {
-
-  const [modalShow, setModalShow] = useState(false);
   const context = useContext(AuthContext);
   const [userWalletAddress, setUserWalletAddress] = context;
+  const [userPosts, setUserPosts] = useState([]);
 
-  const handleFileSubmit = async (e) => {
-    e.preventDefault();
-    const file = e.target.elements[0].files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("userAddress", userWalletAddress);
-
-    axios.post("/fileUpload", formData)
-    .then((res) => {
-      console.log(res.data);
-    })
-    .catch(err => {
-      console.log(err);
-    })
-  }
-
-  const handleStringSubmit = (e) => {
-    e.preventDefault();
-    const string = e.target.elements[0].value;
-    axios.post("/stringUpload", { string, userWalletAddress })
-    .then((res) => {
-      console.log(res);
-    })
-    .catch(err => {
-      console.log(err);
-    })
-  }
+  useEffect(() => {
+    const getUserPosts = async () => {
+      const response = await axios.get("/userPosts", { params: { userWalletAddress }});
+      setUserPosts(response.data);
+    }
+    getUserPosts();
+  }, [userWalletAddress])
+  
 
   const handleLogout = (e) => {
     localStorage.setItem("address", null);
@@ -52,34 +31,13 @@ function Homepage() {
     window.location.reload();
   }
 
-
   return (
     <>
     <div className='formsContainer'>
-      <h1>HOMEPAGE</h1>
-      <Button variant="primary" onClick={() => setModalShow(true)}>
-        Change username
-      </Button>
-      <UserNameInfo
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-      />
-      <form onSubmit={handleFileSubmit}>
-        <label>
-          File Upload:
-          <input type="file" />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
-      <br />
-      <form onSubmit={handleStringSubmit}>
-        <label>
-          String Upload:
-          <input type="text" />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+      <Navbar />
+      <AddPostComponent userWalletAddress={userWalletAddress}/>
       <button onClick={handleLogout}>ClearLocalStorage</button>
+      {userPosts.length > 0 ? <PostList key={userPosts} userPosts={userPosts} /> : "" }
     </div>
     </>
   )
