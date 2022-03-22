@@ -26,7 +26,7 @@ function Navbar() {
         Make a Post
       </Button>
       <AddPostComponent
-        userWalletAddress={userWalletAddress}
+        userwalletaddress={userWalletAddress}
         show={addPostModalShow}
         onHide={() => setAddPostModalShow(false)}
       />

@@ -10,7 +10,6 @@ function App() {
   const [userWalletAddress, setUserWalletAddress] = useState(localStorage.getItem("address"));
 
   useEffect(() => {
-    console.log(userWalletAddress)
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', async () => {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });

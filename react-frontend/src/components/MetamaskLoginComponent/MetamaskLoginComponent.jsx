@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import "./LoginRegister.scss";
+import "./MetamaskLoginComponent.scss";
 import { AuthContext } from "../../App";
 import MetaMaskOnboarding from '@metamask/onboarding'
 const onboarding = new MetaMaskOnboarding({});
