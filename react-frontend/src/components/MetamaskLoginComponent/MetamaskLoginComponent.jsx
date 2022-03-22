@@ -2,7 +2,6 @@ import React, { useState, useContext, useEffect } from "react";
 import "./LoginRegister.scss";
 import { AuthContext } from "../../App";
 import MetaMaskOnboarding from '@metamask/onboarding'
-import UserNameInfo from '../UserNameInfo/UserNameInfo';
 const onboarding = new MetaMaskOnboarding({});
 
 function LoginRegister() {

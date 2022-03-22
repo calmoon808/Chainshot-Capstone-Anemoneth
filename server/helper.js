@@ -16,10 +16,9 @@ const isUser = async (userWalletAddress) => {
 
 const mkUserDir = async (userWalletAddress) => {
     try {
-        // await ipfs.files.mkdir(`/${dirName}/userInfo`, { parents: true });
         await ipfs.files.mkdir(`/${userWalletAddress}/posts`, { parents: true });
         await ipfs.files.mkdir(`/${userWalletAddress}/comments`, { parents: true });
-         
+        await ipfs.files.write(`/${userWalletAddress}/userInfo`, "{}", { create: true });
     }
     catch (error) {
         console.log("Something went wrong when creating a new IPFS directory");
@@ -27,7 +26,7 @@ const mkUserDir = async (userWalletAddress) => {
     }
 }
 
-const writeFile = async (_postData) => {
+const addPost = async (_postData) => {
     try {
         await ipfs.files.mkdir(`/${_postData.userAddress}/posts/${_postData.postTitle}/comments/`, { parents: true });
 
@@ -46,6 +45,7 @@ const writeFile = async (_postData) => {
             "fileName": _postData.fileName,
             "postTitle": _postData.postTitle,
             "postBody": _postData.postBody,
+            "timestamp": Date.now(),
         };
         await ipfs.files.write(`/${_postData.userAddress}/posts/${_postData.postTitle}/postData`, JSON.stringify(postData), { create: true });
 
@@ -74,23 +74,28 @@ const writeFile = async (_postData) => {
     }
     catch (error) {
         console.log("Something went wrong when creating a new IPFS post");
-        console.error(error.message);
+        console.error("FROM addPost:", error.message);
     }
 }
 
 const getUserPosts = async (userWalletAddress) => {
     try {
-        console.log(userWalletAddress)
-        const result = [];
+        let results = [];
         for await (const resultPart of ipfs.files.ls(`/${userWalletAddress}/posts`)) {
-            result.push(await getPost(resultPart.name, userWalletAddress));
+            results.push(await getPost(resultPart.name));
         }
-        return result;
+        results = sortResultsByTimestamp(results);
+        return results;
     }
     catch(error) {
-        if (error.message === "Can't find file while getting all userPosts") return false
-        console.log(error.message);
+        console.log("FROM getUserPosts: User has no posts or", error.message);
     }
+}
+
+const sortResultsByTimestamp = (results) => {
+    return results.sort((x, y) => {
+        return y.timestamp - x.timestamp;
+    })
 }
 
 const getPost = async (postDataCid) => {
@@ -111,6 +116,7 @@ const getComments = async (postData) => {
         const commentData = await cidBufferToString(commentCid);
         const username = await getUsername(commentData.commentOwner);
         commentData["username"] = username;
+        commentData["timestamp"] = Date.now();
         result.push(commentData);
     }
     return result;
@@ -132,10 +138,9 @@ const postComment = async (userWalletAddress, postDataCid, commentText) => {
         console.log("comment added to post")
     }
     catch(error) {
-        if (error === "error coming from postComment") return false
-        console.log(error.message);
+        console.log("FROM postComment:", error.message);
     }
-} 
+}
 
 const cidBufferToString = async (dataCid) => {
     const bufferedContents = await toBuffer(ipfs.cat(dataCid));
@@ -158,8 +163,8 @@ const getUsername = async (userWalletAddress) => {
         return username.username;
     }
     catch(err) {
-        console.log(err.message)
+        return null;
     }
 }
 
-module.exports = { isUser, mkUserDir, writeFile, getUserPosts, postComment, changeUsername }
+module.exports = { isUser, mkUserDir, addPost, getUserPosts, postComment, changeUsername }

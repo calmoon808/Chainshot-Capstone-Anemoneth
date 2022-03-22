@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './LoginPage.scss';
-import LoginRegisterComponent from '../LoginRegisterComponent/LoginRegister'
+import LoginRegisterComponent from '../MetamaskLoginComponent/MetamaskLoginComponent'
 
 function LoginPage() {
   return (
