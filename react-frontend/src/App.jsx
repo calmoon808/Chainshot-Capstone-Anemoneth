@@ -22,7 +22,6 @@ function App() {
 
   return (
     <>
-      {/* <Navbar clwnblnc={clwnblnc} dispAddr={dispAddr} username={username} connected={connected} /> */}
       <AuthContext.Provider value={[userWalletAddress, setUserWalletAddress]}>
         <Router>
           <Routes>
