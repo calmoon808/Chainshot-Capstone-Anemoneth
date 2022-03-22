@@ -24,9 +24,10 @@ function PostList(props) {
       {postList.map((post) => {
         const fileUrl = `https://ipfs.io/ipfs/${post.fileCid}`;
         return (
+
           <li key={postList.indexOf(post)} className="post">
             <h3>{post.postTitle}</h3>
-            <p>Owner: {post.postOwner}</p>
+            <p>Owner: {post.username ? post.username : post.postOwner}</p>
             {post.fileCid ? <img src={fileUrl} alt="" /> : ""}
             <p>{post.postBody}</p>
             <a href={fileUrl}>IPFS link</a><br />
@@ -36,7 +37,7 @@ function PostList(props) {
                 console.log(comment);
                 return (
                   <li key={comment.commentId} className="comment">
-                    Comment from: {comment.commentOwner}<br/>
+                    Comment from: {comment.username ? comment.username : comment.commentOwner}<br/>
                     Body: {comment.commentBody}
                   </li>
                 )
