@@ -17,7 +17,7 @@ function AddPostComponent(props) {
         return;
       }
     const formData = new FormData();
-    formData.append("userAddress", props.userWalletAddress);
+    formData.append("userAddress", props.userwalletaddress);
     formData.append("postTitle", postTitle);
     formData.append("postBody", postBody);
     if (e.target.elements[2].files.length) {
@@ -48,7 +48,7 @@ function AddPostComponent(props) {
         </Modal.Title>
       </Modal.Header>
         <Modal.Body>
-        <Form onSubmit={handlePostSubmit}>
+        <Form id="addPostForm" onSubmit={handlePostSubmit}>
           <Form.Group className="mb-3" controlId="postTitle">
             <Form.Label>Title</Form.Label>
             <Form.Control placeholder="Enter post title" />
@@ -61,21 +61,7 @@ function AddPostComponent(props) {
             <Form.Label>Upload an image (optional)</Form.Label>
             <Form.Control type="file" size="sm" />
           </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
         </Form>
-        <div className='addPostComponent'>
-          <form onSubmit={handlePostSubmit}>
-            <label>
-              Make a Post: <br />
-              Title: <input name="title" type="text" /><br />
-              Body: <input name="body" type="text" /><br />
-              Upload a File: <input name="file" type="file" /><br />
-            </label>
-            {/* <input type="submit" value="Submit" /> */}
-          </form>
-        </div>
         </Modal.Body>
       <Modal.Footer>
         <Button form="addPostForm" type="submit">Submit</Button>
