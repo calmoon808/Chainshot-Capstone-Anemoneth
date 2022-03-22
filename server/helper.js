@@ -9,15 +9,17 @@ const isUser = async (userWalletAddress) => {
         return result.cid.toString();
     }
     catch(error) {
-        if (error.message === "file does not exist") return false
+        if (error.message === "User folder not found") return false
         console.log(error.message);
     }
 }
 
-const mkUserDir = async (dirName) => {
+const mkUserDir = async (userWalletAddress) => {
     try {
-        await ipfs.files.mkdir(`/${dirName}/posts`, { parents: true });
-        await ipfs.files.mkdir(`/${dirName}/userInfo`, { parents: true }); 
+        // await ipfs.files.mkdir(`/${dirName}/userInfo`, { parents: true });
+        await ipfs.files.mkdir(`/${userWalletAddress}/posts`, { parents: true });
+        await ipfs.files.mkdir(`/${userWalletAddress}/comments`, { parents: true });
+         
     }
     catch (error) {
         console.log("Something went wrong when creating a new IPFS directory");
@@ -78,6 +80,7 @@ const writeFile = async (_postData) => {
 
 const getUserPosts = async (userWalletAddress) => {
     try {
+        console.log(userWalletAddress)
         const result = [];
         for await (const resultPart of ipfs.files.ls(`/${userWalletAddress}/posts`)) {
             result.push(await getPost(resultPart.name, userWalletAddress));
@@ -85,7 +88,7 @@ const getUserPosts = async (userWalletAddress) => {
         return result;
     }
     catch(error) {
-        if (error.message === "file does not exist asdfasdf") return false
+        if (error.message === "Can't find file while getting all userPosts") return false
         console.log(error.message);
     }
 }
@@ -93,6 +96,8 @@ const getUserPosts = async (userWalletAddress) => {
 const getPost = async (postDataCid) => {
     const postDataStr = await cidBufferToString(postDataCid);
     const postData = postDataStr;
+    const username = await getUsername(postData.postOwner);
+    postData["username"] = username;
     postData["postDataCid"] = postDataCid;
     postData["comments"] = await getComments(postData);
     return postData;
@@ -103,8 +108,10 @@ const getComments = async (postData) => {
     const { postOwner, postDataCid } = postData;
     for await (const resultPart of ipfs.files.ls(`/${postOwner}/posts/${postDataCid}/comments`)) {
         const commentCid = await resultPart.cid.toString();
-        const commentDataString = await cidBufferToString(commentCid);
-        result.push(commentDataString);
+        const commentData = await cidBufferToString(commentCid);
+        const username = await getUsername(commentData.commentOwner);
+        commentData["username"] = username;
+        result.push(commentData);
     }
     return result;
 }
@@ -135,4 +142,24 @@ const cidBufferToString = async (dataCid) => {
     return JSON.parse(new TextDecoder("utf-8").decode(bufferedContents));
 }
 
-module.exports = { isUser, mkUserDir, writeFile, getUserPosts, postComment }
+const changeUsername = async (userWalletAddress, username) => {
+    const userInfo = {
+        "username": username,
+        "changedAt": Date.now()
+    }
+    await ipfs.files.write(`/${userWalletAddress}/userInfo`, JSON.stringify(userInfo), { create: true });
+}
+
+const getUsername = async (userWalletAddress) => {
+    try {
+        const userInfo = await ipfs.files.stat(`/${userWalletAddress}/userInfo`);
+        const userInfoCid = userInfo.cid.toString();
+        const username = await cidBufferToString(userInfoCid);
+        return username.username;
+    }
+    catch(err) {
+        console.log(err.message)
+    }
+}
+
+module.exports = { isUser, mkUserDir, writeFile, getUserPosts, postComment, changeUsername }

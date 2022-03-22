@@ -4,7 +4,7 @@ const fs = require("fs");
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
-const { isUser, mkUserDir, writeFile, getUserPosts, postComment } = require("./helper");
+const { isUser, mkUserDir, writeFile, getUserPosts, postComment, changeUsername } = require("./helper");
 const { create } = require('ipfs-http-client');
 const ipfs = create('/ip4/127.0.0.1/tcp/5001');
 
@@ -29,20 +29,29 @@ app.post("/postComment", async (req, res) => {
     await postComment(userWalletAddress, postDataCid, commentText);
 })
 
-app.post("/postUpload", async (req, res) => {
-    const userAddress = req.body.userAddress;
+app.post("/userName", async(req, res) => {
+    const userAddress = req.body.userWalletAddress;
+    const userName = req.body.userName;
     if (!(await isUser(`/${userAddress}`))) {
         await mkUserDir(userAddress);
+    }
+    await changeUsername(userAddress, userName)
+})
+
+app.post("/postUpload", async (req, res) => {
+    const userWalletAddress = req.body.userAddress;
+    if (!(await isUser(`/${userWalletAddress}`))) {
+        await mkUserDir(userWalletAddress);
     }
     const postTitle = req.body.postTitle;
     const postBody = req.body.postBody;
 
     const postData = {
-        userAddress,
+        userAddress: userWalletAddress,
         postTitle,
         postBody,
     }
-    let postObj = { owner: userAddress };
+    let postObj = { owner: userWalletAddress };
     if (req.files) {
         const file = req.files.postFile;
         postData.fileName = file.name;

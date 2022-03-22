@@ -5,6 +5,8 @@ import { AuthContext } from "../../App";
 import PostList from "../PostList/PostList";
 import Navbar from "../Navbar/Navbar";
 import AddPostComponent from "../AddPostComponent/AddPostComponent";
+  import {Button} from 'react-bootstrap';
+  import UserNameInfo from "../UserNameInfo/UserNameInfo";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'  //'application/x-www-form-urlencoded';
@@ -30,12 +32,14 @@ function Homepage() {
   }
 
   return (
+    <>
     <div className='formsContainer'>
       <Navbar />
       <AddPostComponent userWalletAddress={userWalletAddress}/>
       <button onClick={handleLogout}>ClearLocalStorage</button>
       {userPosts.length > 0 ? <PostList key={userPosts} userPosts={userPosts} /> : "" }
     </div>
+    </>
   )
 }
 
