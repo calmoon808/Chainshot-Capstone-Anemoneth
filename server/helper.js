@@ -17,7 +17,7 @@ const isUser = async (userWalletAddress) => {
 const mkUserDir = async (userWalletAddress) => {
     try {
         await ipfs.files.mkdir(`/${userWalletAddress}/posts`, { parents: true });
-        await ipfs.files.mkdir(`/${userWalletAddress}/comments`, { parents: true });
+        // await ipfs.files.mkdir(`/${userWalletAddress}/comments`, { parents: true });
         await ipfs.files.write(`/${userWalletAddress}/userInfo`, "{}", { create: true });
     }
     catch (error) {
@@ -51,6 +51,17 @@ const addPost = async (_postData) => {
 
         // change post directory name to cid of postData file
         let postDataCid = (await ipfs.files.stat(`/${_postData.userAddress}/posts/${_postData.postTitle}/postData`)).cid.toString();
+        // add postDataCid to feed file in IPFS
+        let feedData = await ipfs.files.stat("/feedPosts");
+        const feedDataCid = feedData.cid.toString();
+        feedData = await cidBufferToString(feedDataCid);
+        // limit feed to hold up to 50 posts
+        if (feedData.length > 50) {
+            feedData.pop();
+        }
+        feedData.push(postDataCid);
+        await ipfs.files.write("/feedPosts", JSON.stringify(feedData));
+
         await ipfs.files.mkdir(`/${_postData.userAddress}/posts/${postDataCid}`, { parents: true });
         await ipfs.files.mv(`/${_postData.userAddress}/posts/${_postData.postTitle}/postData`,`/${_postData.userAddress}/posts/${postDataCid}`);
         await ipfs.files.mv(`/${_postData.userAddress}/posts/${_postData.postTitle}/comments`,`/${_postData.userAddress}/posts/${postDataCid}`);
@@ -92,12 +103,6 @@ const getUserPosts = async (userWalletAddress) => {
     }
 }
 
-const sortResultsByTimestamp = (results) => {
-    return results.sort((x, y) => {
-        return y.timestamp - x.timestamp;
-    })
-}
-
 const getPost = async (postDataCid) => {
     const postDataStr = await cidBufferToString(postDataCid);
     const postData = postDataStr;
@@ -120,6 +125,28 @@ const getComments = async (postData) => {
         result.push(commentData);
     }
     return result;
+}
+
+const getFeedPosts = async () => {
+    try {
+        const feedPosts = await ipfs.files.stat("/feedPosts");
+        const feedPostsCid = feedPosts.cid.toString();
+        let feedData = await cidBufferToString(feedPostsCid);
+        const result = []
+        for (let i = 0; i < feedData.length; i++) {
+            result.push(await getPost(feedData[i]));
+        }
+        return result;
+
+    } catch(err) {
+        console.log(err.message)
+        if (err.message === "file does not exist") {
+            ipfs.files.write("/feedPosts", "[]", { create: true });
+            console.log("/feedPosts created in IPFS");
+        }
+        return [];
+    }
+
 }
 
 const postComment = async (userWalletAddress, postDataCid, commentText) => {
@@ -167,4 +194,10 @@ const getUsername = async (userWalletAddress) => {
     }
 }
 
-module.exports = { isUser, mkUserDir, addPost, getUserPosts, postComment, changeUsername }
+const sortResultsByTimestamp = (results) => {
+    return results.sort((x, y) => {
+        return y.timestamp - x.timestamp;
+    })
+}
+
+module.exports = { isUser, mkUserDir, addPost, getUserPosts, postComment, changeUsername, getFeedPosts }

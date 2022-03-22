@@ -4,7 +4,7 @@ const fs = require("fs");
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
-const { isUser, mkUserDir, addPost, getUserPosts, postComment, changeUsername } = require("./helper");
+const { isUser, mkUserDir, addPost, getUserPosts, postComment, changeUsername, getFeedPosts } = require("./helper");
 
 app.use(fileUpload());
 app.use(cors());
@@ -13,6 +13,11 @@ app.use(express.json()); // for JSON payloads
 
 app.get("/", (req, res) => {
     res.status(200).send("test");
+})
+
+app.get("/feedPosts", async (req, res) => {
+    // console.log(await getFeedPosts());
+    res.status(200).send((await getFeedPosts()).reverse());
 })
 
 app.get("/userPosts", async (req, res) => {
