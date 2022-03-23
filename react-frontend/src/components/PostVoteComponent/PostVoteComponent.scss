@@ -1,0 +1,25 @@
+.voteCounter {
+    border-right: 1px solid black;
+    padding-top: 30px;
+    min-width: 25px;
+    max-width: 25px;
+    img {
+        max-width: 25px;
+    }
+
+    .upArrow {
+        transform: rotate(-90deg);
+    }
+
+    .downArrow {
+        transform: rotate(90deg);
+    }
+
+    .voteCount {
+        max-width: 25px;
+        text-align: center;
+        p {
+            margin-bottom: 0;
+        }
+    }
+}
