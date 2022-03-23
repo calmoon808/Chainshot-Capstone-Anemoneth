@@ -8,28 +8,33 @@ import './Navbar.scss'
 
 function Navbar() {
   const context = useContext(AuthContext);
-  const [userWalletAddress, setUserWalletAddress] = context;
+  const [userWalletAddress] = context;
   const [usernameModalShow, setUsernameModalShow] = useState(false);
   const [addPostModalShow, setAddPostModalShow] = useState(false);
 
   return (
-    <div>
-      <h1>NAME OF SOCIAL NETWORK</h1>
-      <Button variant="primary" onClick={() => setUsernameModalShow(true)}>
-        Change username
-      </Button>
-      <UserNameInfo
-        show={usernameModalShow}
-        onHide={() => setUsernameModalShow(false)}
-      />
-      <Button variant="primary" onClick={() => setAddPostModalShow(true)}>
-        Make a Post
-      </Button>
-      <AddPostComponent
-        userwalletaddress={userWalletAddress}
-        show={addPostModalShow}
-        onHide={() => setAddPostModalShow(false)}
-      />
+    <div className='navBar'>
+      <img src="/assets/logo.png" alt="" />
+      <div className="appName">
+        <h1>Decentralized Social</h1>
+      </div>
+      <div className='buttonContainer'>
+        <Button className="buttons" variant="primary" onClick={() => setUsernameModalShow(true)}>
+          Change username
+        </Button>
+        <UserNameInfo
+          show={usernameModalShow}
+          onHide={() => setUsernameModalShow(false)}
+        />
+        <Button className="buttons" variant="primary" onClick={() => setAddPostModalShow(true)}>
+          Make a Post
+        </Button>
+        <AddPostComponent
+          userwalletaddress={userWalletAddress}
+          show={addPostModalShow}
+          onHide={() => setAddPostModalShow(false)}
+        />
+      </div>
     </div>
   )
 }
