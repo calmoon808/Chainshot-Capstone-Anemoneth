@@ -17,7 +17,6 @@ const isUser = async (userWalletAddress) => {
 const mkUserDir = async (userWalletAddress) => {
     try {
         await ipfs.files.mkdir(`/${userWalletAddress}/posts`, { parents: true });
-        // await ipfs.files.mkdir(`/${userWalletAddress}/comments`, { parents: true });
         await ipfs.files.write(`/${userWalletAddress}/userInfo`, "{}", { create: true });
     }
     catch (error) {
@@ -115,6 +114,7 @@ const getPost = async (postDataCid) => {
 
 const getComments = async (postData) => {
     const result = [];
+    // console.log(postData)
     const { postOwner, postDataCid } = postData;
     for await (const resultPart of ipfs.files.ls(`/${postOwner}/posts/${postDataCid}/comments`)) {
         const commentCid = await resultPart.cid.toString();
@@ -149,20 +149,20 @@ const getFeedPosts = async () => {
 
 }
 
-const postComment = async (userWalletAddress, postDataCid, commentText) => {
+const postComment = async (userWalletAddress, postOwner, postDataCid, commentBody) => {
+    console.log(userWalletAddress, postOwner, postDataCid, commentBody);
     try {
         const result = [];
-        for await (const resultPart of ipfs.files.ls(`/${userWalletAddress}/posts/${postDataCid}/comments`)) {
+        for await (const resultPart of ipfs.files.ls(`/${postOwner}/posts/${postDataCid}/comments`)) {
             result.push(resultPart.cid.toString());
         }
         const commentData = { 
             "commentId": result.length,
             "commentOwner": userWalletAddress, 
             "postDataCid": postDataCid,
-            "commentBody": commentText,
+            "commentBody": commentBody,
         };
-        ipfs.files.write(`/${userWalletAddress}/posts/${postDataCid}/comments/${result.length}`, JSON.stringify(commentData), { create: true });
-        console.log("comment added to post")
+        ipfs.files.write(`/${postOwner}/posts/${postDataCid}/comments/${result.length}`, JSON.stringify(commentData), { create: true });
     }
     catch(error) {
         console.log("FROM postComment:", error.message);

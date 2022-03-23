@@ -16,7 +16,6 @@ app.get("/", (req, res) => {
 })
 
 app.get("/feedPosts", async (req, res) => {
-    // console.log(await getFeedPosts());
     res.status(200).send((await getFeedPosts()).reverse());
 })
 
@@ -26,10 +25,11 @@ app.get("/userPosts", async (req, res) => {
 })
 
 app.post("/postComment", async (req, res) => {
-    const userWalletAddress = req.body.userWalletAddress;
+    const userWalletAddress = req.body.userwalletaddress;
+    const postOwner = req.body.postOwner;
     const postDataCid = req.body.postDataCid;
-    const commentText = req.body.commentText;
-    await postComment(userWalletAddress, postDataCid, commentText);
+    const commentText = req.body.commentBody;
+    await postComment(userWalletAddress, postOwner, postDataCid, commentText);
 })
 
 app.post("/userName", async(req, res) => {

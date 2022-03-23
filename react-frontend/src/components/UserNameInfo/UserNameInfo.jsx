@@ -6,7 +6,7 @@ import { AuthContext } from "../../App";
 function UserNameInfo(props) {
 
     const context = useContext(AuthContext);
-    const [userWalletAddress, setUserWalletAddress] = context;
+    const [userWalletAddress] = context;
 
     const handleUsernameSubmit = (e) => {
       console.log('asdfas')
