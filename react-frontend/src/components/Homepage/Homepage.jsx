@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import './homepage.scss';
+import './Homepage.scss';
 import axios from 'axios';
 import { AuthContext } from "../../App";
 import PostList from "../PostList/PostList";
@@ -19,23 +19,13 @@ function Homepage() {
       setFeedPosts(response.data);
     }
     getFeedPosts();
-  }, [userWalletAddress])
-  
-
-  const handleLogout = (e) => {
-    localStorage.setItem("address", null);
-    setUserWalletAddress(null);
-    window.location.reload();
-  }
+  }, [userWalletAddress, setUserWalletAddress])
 
   return (
-    <>
-    <div className='formsContainer'>
+    <div className='homePage'>
       <Navbar />
-      <button onClick={handleLogout}>ClearLocalStorage</button>
       {feedPosts.length > 0 ? <PostList key={feedPosts} userPosts={feedPosts} /> : "" }
     </div>
-    </>
   )
 }
 
