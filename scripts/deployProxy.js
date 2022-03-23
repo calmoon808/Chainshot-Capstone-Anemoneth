@@ -2,8 +2,9 @@ const { ethers, upgrades } = require("hardhat");
 
 
 async function main() {
-  const AnemonethV1 = await ethers.getContractFactory("AnemonethV1");
-  const proxy = await upgrades.deployProxy(AnemonethV1, ["anemoneth", "CLWN", 9000000000000, 10000]);
+  const value = ethers.BigNumber.from("1000000");
+  const Dcs = await ethers.getContractFactory("Dcs");
+  const proxy = await upgrades.deployProxy(Dcs, ["Decentralized Social", "DCS"]);
   await proxy.deployed();
 
   console.log(proxy.address);

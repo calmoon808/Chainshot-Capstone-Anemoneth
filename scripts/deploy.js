@@ -1,33 +1,22 @@
-const ethers = require('ethers');
-require('dotenv').config();
-
 async function main() {
+  const [deployer] = await ethers.getSigners();
 
-  const url = process.env.RINKEBY_URL;
+  console.log("Deploying contracts with the account:", deployer.address);
 
-  // woah, we just cut out the whole compile.js flow with this!
-  let artifacts = await hre.artifacts.readArtifact("Dcs");
-
-  const provider = new ethers.providers.JsonRpcProvider(url);
-
-  let privateKey = process.env.METAMASK_PRIVATE_KEY;
-
-  let wallet = new ethers.Wallet(privateKey, provider);
-
-  // Create an instance of a Dcs Factory
-  let factory = new ethers.ContractFactory(artifacts.abi, artifacts.bytecode, wallet);
-
-  let dcs = await factory.deploy();
-
-  console.log("DCS address:", dcs.address);
-
-  await dcs.deployed();
+  const weiAmount = (await deployer.getBalance()).toString();
   
+  console.log("Account balance:", (await ethers.utils.formatEther(weiAmount)));
+
+  // make sure to replace the "Decentralized Social" reference with your own ERC-20 name!
+  const Token = await ethers.getContractFactory("Dcs");
+  const token = await Token.deploy();
+
+  console.log("Token address:", token.address);
 }
 
 main()
   .then(() => process.exit(0))
-  .catch(error => {
+  .catch((error) => {
     console.error(error);
     process.exit(1);
 });
