@@ -1,4 +1,4 @@
-# AnemonEth
+# Decentralized Social
 We are a **Decentralized** social media platform that allows users to retain the value they create
 
 ## Rinkerscan Links
