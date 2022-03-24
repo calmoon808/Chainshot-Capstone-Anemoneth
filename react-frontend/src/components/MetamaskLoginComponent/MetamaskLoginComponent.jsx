@@ -26,9 +26,9 @@ function LoginRegister() {
                 setDisableButton("true");
                 const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                 setDisableButton("false");
-                localStorage.setItem("address", accounts[0]);
+                localStorage.setItem("address", accounts[0]); //
                 if (accounts.length > 0) {
-                    setUserWalletAddress(accounts[0]);
+                    setUserWalletAddress(accounts[0]); 
                     window.location.reload();
                 }
             } catch (error) {

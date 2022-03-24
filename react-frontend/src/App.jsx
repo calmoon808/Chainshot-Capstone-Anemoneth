@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from './components/LoginPage/LoginPage';
 import Homepage from './components/Homepage/Homepage';
 
+
 export const AuthContext = createContext();
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
           <Routes>
             <Route path="/" element = { (userWalletAddress !== "null") && (userWalletAddress !== null) ? 
               <Homepage /> : 
-              <LoginPage />}
+              <LoginPage /> }
             />
           </Routes>
         </Router>

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import anemonethJSON from "../../utils/anemoneth.json"
-const anemonethProxyAddress = "0x70649c7b44ab1177EF8c058379ba975d78735378";
+import anemonethJSON from "../../utils/anemoneth.json" //change
+const ProxyAddress = "0xD44DB4fA1D66319f93e45a42a61a7cE8058930b3";
 const { ethereum } = window;
 let provider;
 let signer;
@@ -11,7 +11,7 @@ function contractCall() {
     ethereum.request({ method: 'eth_requestAccounts'});
     provider = new ethers.providers.Web3Provider(ethereum);
     signer = provider.getSigner();
-    contractInstance = new ethers.Contract(anemonethProxyAddress, anemonethJSON.abi, signer);
+    contractInstance = new ethers.Contract(ProxyAddress, anemonethJSON.abi, signer);
     return contractInstance;
 }
 
