@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import {Modal, Button, Form} from 'react-bootstrap'; 
 import contractCall from "../ContractCall/ContractCall";
-import axios from 'axios';
 import { AuthContext } from "../../App";
 
 function Register(props){

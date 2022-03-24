@@ -9,7 +9,6 @@ function UserNameInfo(props) {
     const [userWalletAddress] = context;
 
     const handleUsernameSubmit = (e) => {
-      console.log('asdfas')
       const userName = e.target.elements[0].value;
       axios.post("/userName", { userName, userWalletAddress })
       .then((res) => {
