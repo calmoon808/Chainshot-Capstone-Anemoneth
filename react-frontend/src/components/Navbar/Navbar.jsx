@@ -5,13 +5,16 @@ import AddPostComponent from '../AddPostComponent/AddPostComponent';
 import { AuthContext } from '../../App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.scss'
+import { useWeb3React } from '@web3-react/core';
+import Register from '../../components/Register/Register';
 
 function Navbar() {
   const context = useContext(AuthContext);
   const [userWalletAddress] = context;
   const [usernameModalShow, setUsernameModalShow] = useState(false);
   const [addPostModalShow, setAddPostModalShow] = useState(false);
-  
+  const [dcsToken, setDcsToken] = useState();
+	const web3reactContext = useWeb3React();
  
   return (
     <div className='navBar'>
@@ -35,7 +38,9 @@ function Navbar() {
           show={addPostModalShow}
           onHide={() => setAddPostModalShow(false)}
         />
-      </div>
+        <Register setdcstoken={setDcsToken}/>
+        </div>
+        <div className="amountOfToken">{dcsToken} DCS </div>
     </div>
   )
 }

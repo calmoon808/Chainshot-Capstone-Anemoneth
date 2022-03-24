@@ -22,7 +22,7 @@ contract Dcs is ERC20, Ownable {
         User storage user = users[msg.sender];
         require(!user.isActive,"create new user");
         user.isActive = true;
-        _transfer(address(this), msg.sender, 1);  //trade 1 gwei to DCS        
+        _transfer(address(this), msg.sender, 1 * (10**18));  //trade 1 gwei to DCS        
     }
     
 
