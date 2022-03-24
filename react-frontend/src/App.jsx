@@ -3,16 +3,16 @@ import React, { useState, useEffect, createContext } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from './components/LoginPage/LoginPage';
 import Homepage from './components/Homepage/Homepage';
-import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
+import { Web3ReactProvider, useWeb3React } from '@web3-react/core';
 
 
 export const AuthContext = createContext();
-
-export function getLibrary(provider, connector) {
-  return new Web3Provider(provider);
+export function getLibrary(provider) {
+  const web3Provider = new Web3Provider(provider);
+  web3Provider.pollingInterval = 1000;
+  return web3Provider;
 }
-
 function App() {
   const [userWalletAddress, setUserWalletAddress] = useState(localStorage.getItem("address"));
 

@@ -1,34 +1,20 @@
 import React, { useState, useContext } from 'react'
-import {Button, Form} from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 import UserNameInfo from "../UserNameInfo/UserNameInfo";
 import AddPostComponent from '../AddPostComponent/AddPostComponent';
 import { AuthContext } from '../../App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.scss'
 import { useWeb3React } from '@web3-react/core';
-import { injected } from '../../utils/connectors';
-import { getContract } from '../../utils/contract';
+import Register from '../../components/Register/Register';
 
 function Navbar() {
   const context = useContext(AuthContext);
   const [userWalletAddress] = context;
   const [usernameModalShow, setUsernameModalShow] = useState(false);
   const [addPostModalShow, setAddPostModalShow] = useState(false);
-	const web3reactContext = useWeb3React(); 
-  const { ethereum } = window;
-  console.log(web3reactContext);
-  //web3react metamask   
-	const connectMetamaskSimple = async () => {
-    // const smartContractInstance = await getContract(ethereum);
-		try {
-			await web3reactContext.activate(injected);
-      //await smartContractInstance.register({ value: 1000000000});
-
-		} catch (ex) {
-			console.log(ex);
-		}
-	};
-  
+  const [dcsToken, setDcsToken] = useState();
+	const web3reactContext = useWeb3React();
  
   return (
     <div className='navBar'>
@@ -52,15 +38,9 @@ function Navbar() {
           show={addPostModalShow}
           onHide={() => setAddPostModalShow(false)}
         />
-        
-				<Button
-					className="buttons" variant="primary"
-					onClick={connectMetamaskSimple}
-				>
-					Register
-        </Button>
-        
-      </div>
+        <Register setdcstoken={setDcsToken}/>
+        </div>
+        <div className="amountOfToken">{dcsToken} DCS </div>
     </div>
   )
 }

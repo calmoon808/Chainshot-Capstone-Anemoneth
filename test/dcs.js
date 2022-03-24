@@ -25,8 +25,7 @@ describe("This is our main Dcs testing scope", function () {
     });
     it("Balance of addr1 is equal 1", async function () {  
         const balanceOfAddr1 = await dcsContract.balanceOf(addr1.address)      
-        expect(balanceOfAddr1).to.equal(1);
-        
+        expect(balanceOfAddr1).to.equal(ethers.utils.parseUnits('1', 18));
     });
 
 });

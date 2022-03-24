@@ -25,7 +25,7 @@ app.get("/userPosts", async (req, res) => {
 })
 
 app.post("/postComment", async (req, res) => {
-    const userWalletAddress = req.body.userwalletaddress;
+    const userWalletAddress = req.body.userWalletAddress;
     const postOwner = req.body.postOwner;
     const postDataCid = req.body.postDataCid;
     const commentText = req.body.commentBody;
