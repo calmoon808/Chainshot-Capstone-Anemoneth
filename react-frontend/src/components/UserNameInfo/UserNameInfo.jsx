@@ -6,9 +6,10 @@ import { AuthContext } from "../../App";
 function UserNameInfo(props) {
 
     const context = useContext(AuthContext);
-    const [userWalletAddress, setUserWalletAddress] = context;
+    const [userWalletAddress] = context;
 
     const handleUsernameSubmit = (e) => {
+      console.log('asdfas')
       const userName = e.target.elements[0].value;
       axios.post("/userName", { userName, userWalletAddress })
       .then((res) => {
@@ -32,14 +33,11 @@ function UserNameInfo(props) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={handleUsernameSubmit}>
+          <Form id="userNameForm" onSubmit={handleUsernameSubmit}>
             <Form.Group className="mb-3" controlId="userNameForm">
               <Form.Label>Change Username</Form.Label>
               <Form.Control type="text" placeholder="Enter username" />
             </Form.Group>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
           </Form>
         </Modal.Body>
       <Modal.Footer>

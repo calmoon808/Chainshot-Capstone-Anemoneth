@@ -1,12 +1,16 @@
 import React, { useContext } from "react";
 import {Modal, Button, Form} from 'react-bootstrap'; 
+import contractCall from "../ContractCall/ContractCall";
 import axios from 'axios';
 import { AuthContext } from "../../App";
 
-function Register(){
+function Register(props){
+    const context = useContext(AuthContext);
+    const [userWalletAddress] = context;
     async function registerCall() {
+        console.log("test");
         let contractInstance = await contractCall();
-        if (await contractInstance.isRegistered(addr1)) {
+        if (await contractInstance.isRegistered()) {
             document.querySelector(".regiErrPlaceholder").textContent = "You are already registered!"
         }
         else{
@@ -15,7 +19,7 @@ function Register(){
     }
     return(
     <Modal>
-        <Form onSubmit={registerCall}>
+        <Form id="register" onSubmit={registerCall}>
             <Button variant="primary" type="submit">
               Register
             </Button>

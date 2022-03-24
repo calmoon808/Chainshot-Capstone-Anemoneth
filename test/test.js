@@ -19,11 +19,14 @@ describe("This is our main Dcs testing scope", function () {
         const tx = await dcsContract.connect(addr1).register({value: 1000000000}); // 1 Gwei
         await tx.wait();
       });
-    it("Should register first", async function () {        
+    it("Should register only once", async function () {        
         await expect(dcsContract.connect(addr1).register({value: 1000000000})).to.be.revertedWith("create new user");
-        const balanceOfDcs = await dcsContract.balanceOf(addr1.address);
-        console.log(addr1.address);
-        expect(balanceOfDcs.to.equal(1000000000));
+        
+    });
+    it("Balance of addr1 is equal 1", async function () {  
+        const balanceOfAddr1 = await dcsContract.balanceOf(addr1.address)      
+        expect(balanceOfAddr1).to.equal(1);
+        
     });
 
 //     it("Deploy the Dcs ERC20 token", async function () {

@@ -4,7 +4,7 @@ const fs = require("fs");
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
-const { isUser, mkUserDir, addPost, getUserPosts, postComment, changeUsername } = require("./helper");
+const { isUser, mkUserDir, addPost, getUserPosts, postComment, changeUsername, getFeedPosts } = require("./helper");
 
 app.use(fileUpload());
 app.use(cors());
@@ -15,16 +15,21 @@ app.get("/", (req, res) => {
     res.status(200).send("test");
 })
 
+app.get("/feedPosts", async (req, res) => {
+    res.status(200).send((await getFeedPosts()).reverse());
+})
+
 app.get("/userPosts", async (req, res) => {
     const userWalletAddress = req.query.userWalletAddress;
     res.status(200).send(await getUserPosts(userWalletAddress));
 })
 
 app.post("/postComment", async (req, res) => {
-    const userWalletAddress = req.body.userWalletAddress;
+    const userWalletAddress = req.body.userwalletaddress;
+    const postOwner = req.body.postOwner;
     const postDataCid = req.body.postDataCid;
-    const commentText = req.body.commentText;
-    await postComment(userWalletAddress, postDataCid, commentText);
+    const commentText = req.body.commentBody;
+    await postComment(userWalletAddress, postOwner, postDataCid, commentText);
 })
 
 app.post("/userName", async(req, res) => {

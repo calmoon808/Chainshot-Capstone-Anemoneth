@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { Button } from "react-bootstrap";
 import "./MetamaskLoginComponent.scss";
 import { AuthContext } from "../../App";
 import MetaMaskOnboarding from '@metamask/onboarding'
@@ -45,13 +46,18 @@ function LoginRegister() {
             }
         }
         MetaMaskClientCheck();
-    }, [])
+    }, [setUserWalletAddress])
 
     return (
         <div id="LoginRegisterComponent">
-            <div>
-                <button id="metamaskConnectButton" className="loginButtons" disable={disableButton} onClick={connectButtonFunc}>{connectButtonText}</button>
-            </div>
+            <Button 
+                id="metamaskConnectButton" 
+                className="loginButtons" 
+                disable={disableButton} 
+                onClick={connectButtonFunc}
+            >
+                {connectButtonText}
+            </Button>
         </div>
     )
 }

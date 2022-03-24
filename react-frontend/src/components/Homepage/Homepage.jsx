@@ -1,10 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react'
-import './homepage.scss';
+import './Homepage.scss';
 import axios from 'axios';
 import { AuthContext } from "../../App";
 import PostList from "../PostList/PostList";
 import Navbar from "../Navbar/Navbar";
-import AddPostComponent from "../AddPostComponent/AddPostComponent";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'  //'application/x-www-form-urlencoded';
@@ -12,31 +11,21 @@ axios.defaults.headers.post['Content-Type'] = 'multipart/form-data'  //'applicat
 function Homepage() {
   const context = useContext(AuthContext);
   const [userWalletAddress, setUserWalletAddress] = context;
-  const [userPosts, setUserPosts] = useState([]);
+  const [feedPosts, setFeedPosts] = useState([]);
 
   useEffect(() => {
-    const getUserPosts = async () => {
-      const response = await axios.get("/userPosts", { params: { userWalletAddress }});
-      setUserPosts(response.data);
+    const getFeedPosts = async () => {
+      const response = await axios.get("/feedPosts");
+      setFeedPosts(response.data);
     }
-    getUserPosts();
-  }, [userWalletAddress])
-  
-
-  const handleLogout = (e) => {
-    localStorage.setItem("address", null);
-    setUserWalletAddress(null);
-    window.location.reload();
-  }
+    getFeedPosts();
+  }, [userWalletAddress, setUserWalletAddress])
 
   return (
-    <>
-    <div className='formsContainer'>
+    <div className='homePage'>
       <Navbar />
-      <button onClick={handleLogout}>ClearLocalStorage</button>
-      {userPosts.length > 0 ? <PostList key={userPosts} userPosts={userPosts} /> : "" }
+      {feedPosts.length > 0 ? <PostList key={feedPosts} userPosts={feedPosts} /> : "" }
     </div>
-    </>
   )
 }
 
