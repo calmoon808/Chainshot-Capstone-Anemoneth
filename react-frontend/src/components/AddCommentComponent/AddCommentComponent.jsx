@@ -9,7 +9,6 @@ function AddCommentComponent(props) {
     const handleCommentSubmit = (e) => {
         const { userwalletaddress } = props;
         const { postOwner, postDataCid } = props.postdata;
-        console.log(props.postdata);
         axios.post("/postComment", { userwalletaddress, postOwner, postDataCid, commentBody })
         .then((res) => {
           console.log(res);
