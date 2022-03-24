@@ -13,7 +13,7 @@ function PostList(props) {
     <ul className='postList'>
       {postList.map((post) => {
         return (
-          <PostComponent post={post} />
+          <PostComponent key={post.postDataCid} post={post} />
         )
       })}
     </ul>
