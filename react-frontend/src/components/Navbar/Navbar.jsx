@@ -6,11 +6,7 @@ import { AuthContext } from '../../App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.scss'
 import { useWeb3React } from '@web3-react/core';
-
 import { injected } from '../../utils/connectors';
-
-
-
 
 function Navbar() {
   const context = useContext(AuthContext);
@@ -59,8 +55,6 @@ function Navbar() {
 				>
 					Connect Metamask
 				</button>
-        
-			  
         
       </div>
     </div>
