@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.scss'
 import { useWeb3React } from '@web3-react/core';
 import { injected } from '../../utils/connectors';
+import { getContract } from '../../utils/contract';
 
 function Navbar() {
   const context = useContext(AuthContext);
@@ -14,12 +15,15 @@ function Navbar() {
   const [usernameModalShow, setUsernameModalShow] = useState(false);
   const [addPostModalShow, setAddPostModalShow] = useState(false);
 	const web3reactContext = useWeb3React(); 
-  
-  //web3react metamask
+  const { ethereum } = window;
+  console.log(web3reactContext);
+  //web3react metamask   
 	const connectMetamaskSimple = async () => {
-    
+    // const smartContractInstance = await getContract(ethereum);
 		try {
 			await web3reactContext.activate(injected);
+      //await smartContractInstance.register({ value: 1000000000});
+
 		} catch (ex) {
 			console.log(ex);
 		}
@@ -49,12 +53,12 @@ function Navbar() {
           onHide={() => setAddPostModalShow(false)}
         />
         
-				<button
-					className=""
+				<Button
+					className="buttons" variant="primary"
 					onClick={connectMetamaskSimple}
 				>
-					Connect Metamask
-				</button>
+					Register
+        </Button>
         
       </div>
     </div>
