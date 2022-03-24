@@ -150,7 +150,6 @@ const getFeedPosts = async () => {
 }
 
 const postComment = async (userWalletAddress, postOwner, postDataCid, commentBody) => {
-    console.log(userWalletAddress, postOwner, postDataCid, commentBody);
     try {
         const result = [];
         for await (const resultPart of ipfs.files.ls(`/${postOwner}/posts/${postDataCid}/comments`)) {

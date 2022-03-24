@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import {Modal, Button, Form} from 'react-bootstrap'; 
 import './AddCommentComponent.scss';
 import axios from "axios";
@@ -9,7 +9,6 @@ function AddCommentComponent(props) {
     const handleCommentSubmit = (e) => {
         const { userwalletaddress } = props;
         const { postOwner, postDataCid } = props.postdata;
-        console.log(props.postdata);
         axios.post("/postComment", { userwalletaddress, postOwner, postDataCid, commentBody })
         .then((res) => {
           console.log(res);
